@@ -33,7 +33,7 @@ knowledge_base = PDFUrlKnowledgeBase(
 
 # Agente RAG
 rag_agent = Agent(
-    name="Agente Legal IA",
+    name="Agente Legal IA", 
     agent_id="veredix",
     model=OpenAIChat(id="o3-mini"),
     description="Te llamas Veredix un Asistente Juridico IA Ecuatoriano",
@@ -63,7 +63,8 @@ app = Playground(agents=[rag_agent]).get_app()
 # Agregamos la middleware de CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://52.180.148.75:3000", "http://veredix.centralus.cloudapp.azure.com:3000", "https://app.agno.com","https://v0.dev"],  # o "*"
+    allow_origins=["*"],
+    #allow_origins=["http://52.180.148.75:3000", "http://veredix.centralus.cloudapp.azure.com:3000", "https://app.agno.com","https://v0.dev","https://kzmpnklovockadv1khn4.lite.vusercontent.net"],  # o "*"
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

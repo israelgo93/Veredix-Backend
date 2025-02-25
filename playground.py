@@ -1,5 +1,5 @@
 # playground.py
-
+import os
 from agno.agent import Agent
 from agno.models.openai import OpenAIChat
 from agno.playground import Playground, serve_playground_app
@@ -9,12 +9,22 @@ from agno.embedder.openai import OpenAIEmbedder
 from agno.knowledge.pdf_url import PDFUrlKnowledgeBase
 from agno.storage.agent.postgres import PostgresAgentStorage
 from agno.vectordb.pgvector import PgVector, SearchType
+from agno.tools.duckduckgo import DuckDuckGoTools
 
 # Importamos CORS Middleware de FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+
+load_dotenv()
+
+db_host = os.getenv("DB_HOST", "localhost")
+db_user = os.getenv("DB_USER", "postgres")
+db_password = os.getenv("DB_PASSWORD", "postgres")
+db_name = os.getenv("DB_NAME", "postgres")
 
 # URL de la base de datos PostgreSQL
-db_url = "postgresql+psycopg://postgres:postgres@localhost:54322/postgres"
+db_url = f"postgresql+psycopg://{db_user}:{db_password}@{db_host}:54322/{db_name}"
+#db_url = "postgresql+psycopg://postgres:postgres@localhost:54322/postgres"
 
 # Creación de la base de conocimiento a partir de archivos PDF locales
 knowledge_base = PDFUrlKnowledgeBase(
@@ -35,7 +45,7 @@ knowledge_base = PDFUrlKnowledgeBase(
 rag_agent = Agent(
     name="Agente Legal IA", 
     agent_id="veredix",
-    model=OpenAIChat(id="o3-mini"),
+    model=OpenAIChat(id="o3-mini", api_key=os.getenv('OPENAI_API_KEY')),
     description="Te llamas Veredix un Asistente Juridico IA Ecuatoriano",
     knowledge=knowledge_base,
     search_knowledge=True,
@@ -43,6 +53,7 @@ rag_agent = Agent(
     add_history_to_messages=True,
     num_history_responses=3,
     show_tool_calls=False,
+    tools=[DuckDuckGoTools()],
     add_datetime_to_instructions=True,
     storage=PostgresAgentStorage(table_name="agent_sessions", db_url=db_url),
     instructions=[
@@ -54,6 +65,7 @@ rag_agent = Agent(
         "Utiliza el formato Markdown, para la crecion de contenido y respuestas elegantes",
         "No inventes informacion verifica la informacion legal antes de responder al usuario",
         "Utiliza emojis para hacer mas amena la respuesta",
+        "Siempre puedes utilizar tu funcion de busqueda web (DuckDuckGoTools) para mejorar tus respuesta.",
         "Para mejorar la interaccion con el usuario y mejorar su experiencia puedes utilizar la funcion get_chat_history, para accerder al historial del Chat y no perder el contexto.",
         "Si respondes con una tabla la tabla solo debe tener los columnas, las filas si pueden mas de dos, debes utilizar un formato markdown compatible y adaptable.",
     ],
@@ -63,15 +75,20 @@ rag_agent = Agent(
 # Inicializar Playground con el agente RAG
 app = Playground(agents=[rag_agent]).get_app()
 
+app.openapi_url = "/api/openapi.json"
+app.docs_url = "/api/docs"
+app.redoc_url = "/api/redoc"
+
 # Agregamos la middleware de CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    #allow_origins=["http://52.180.148.75:3000", "http://veredix.centralus.cloudapp.azure.com:3000", "https://app.agno.com","https://v0.dev","https://kzmpnklovockadv1khn4.lite.vusercontent.net"],  # o "*"
+    #allow_origins=["http://52.180.148.75:3000", "http://veredix.centralus.cloudapp.azure.com:3000", "https://app.agno.com","https://v0.dev","https://veredix.app"],  # o "*"
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 if __name__ == "__main__":
-    serve_playground_app("playground:app", host="0.0.0.0", port=7777, reload=True)
+    #serve_playground_app("playground:app", host="0.0.0.0", port=7777, reload=True)
+    serve_playground_app("playground:app", host="0.0.0.0", port=7777)

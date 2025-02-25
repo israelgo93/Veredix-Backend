@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  veredix:
+    build: .
+    container_name: veredix_app
+    environment:
+      DB_HOST: host.docker.internal   # Apunta a la máquina host
+      DB_PORT: "54322"
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: postgres
+      OPENAI_API_KEY: "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"
+    ports:
+      - "7777:7777"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # Necesario en Linux para resolver el host
+    restart: unless-stopped

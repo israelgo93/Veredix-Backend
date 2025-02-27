@@ -35,7 +35,7 @@ knowledge_base = PDFUrlKnowledgeBase(
         search_type=SearchType.hybrid,
         embedder=OpenAIEmbedder(id="text-embedding-3-small"),
     ),
-    #num_documents=5,
+    num_documents=1,
 )
 
 # Cargar la base de conocimiento. (Descomentar si quieres indexar/regenerar)
@@ -50,10 +50,11 @@ rag_agent = Agent(
     knowledge=knowledge_base,
     search_knowledge=True,
     read_chat_history=True,
+    monitoring=True,
     add_history_to_messages=True,
     num_history_responses=3,
     show_tool_calls=False,
-    tools=[DuckDuckGoTools()],
+    #tools=[DuckDuckGoTools()],
     add_datetime_to_instructions=True,
     storage=PostgresAgentStorage(table_name="agent_sessions", db_url=db_url),
     instructions=[
@@ -75,15 +76,18 @@ rag_agent = Agent(
 # Inicializar Playground con el agente RAG
 app = Playground(agents=[rag_agent]).get_app()
 
-app.openapi_url = "/api/openapi.json"
-app.docs_url = "/api/docs"
-app.redoc_url = "/api/redoc"
+app.root_path = "/api"
+
+# Opcionalmente, si quieres cambiar las rutas por defecto (pero sin el /api):
+# app.docs_url = "/docs"
+# app.openapi_url = "/openapi.json"
+# app.redoc_url = "/redoc"
 
 # Agregamos la middleware de CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    #allow_origins=["http://52.180.148.75:3000", "http://veredix.centralus.cloudapp.azure.com:3000", "https://app.agno.com","https://v0.dev","https://veredix.app"],  # o "*"
+    #allow_origins=["http://52.180.148.75:3000", "http://veredix.centralus.cloudapp.azure.com:3000", "https://app.agno.com","https://v0.dev","https://veredix.app","https://veredix.app/api/"],  # o "*"
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -11,6 +11,11 @@ services:
       DB_PASSWORD: postgres
       DB_NAME: postgres
       OPENAI_API_KEY: "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"
+      AWS_ACCESS_KEY_ID: "AKIA3CMCCU7VEZVHZSHW"
+      AWS_SECRET_ACCESS_KEY: "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"
+      AWS_REGION: "us-east-1"
+      TAVILY_API_KEY: "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"
+
     ports:
       - "7777:7777"
     extra_hosts:

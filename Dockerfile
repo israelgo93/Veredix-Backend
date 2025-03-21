@@ -1,6 +1,9 @@
 # Usa la imagen oficial de Python
 FROM python:3.10-slim
 
+# Actualizar repositorios e instalar git
+RUN apt-get update && apt-get install -y git
+
 # Crea el directorio de trabajo
 WORKDIR /app
 
@@ -15,4 +18,4 @@ COPY . .
 EXPOSE 7777
 
 # Comando de arranque
-CMD ["python", "playground.py"]
+CMD ["python", "playgroundteam.py"]

@@ -18,4 +18,4 @@ COPY . .
 EXPOSE 7777
 
 # Comando de arranque
-CMD ["python", "playgroundteam.py"]
+CMD ["python", "playground.py"]

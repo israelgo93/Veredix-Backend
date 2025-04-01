@@ -7,7 +7,7 @@ from agno.playground import Playground, serve_playground_app
 # Importaciones para RAG con carga de PDFs locales
 from agno.embedder.openai import OpenAIEmbedder
 from agno.knowledge.pdf import PDFKnowledgeBase
-from agno.storage.agent.postgres import PostgresAgentStorage
+from agno.storage.postgres import PostgresStorage
 from agno.vectordb.pgvector import PgVector, SearchType
 from agno.tools.duckduckgo import DuckDuckGoTools
 
@@ -53,7 +53,7 @@ rag_agent = Agent(
     show_tool_calls=False,
     tools=[DuckDuckGoTools()],
     add_datetime_to_instructions=True,
-    storage=PostgresAgentStorage(table_name="agent_sessions", db_url=db_url),
+    storage=PostgresStorage(table_name="sesion_agente", db_url=db_url),
     instructions=[
         # 1. VERIFICACIÓN DE INFORMACIÓN Y FUENTES
         "Siempre busca en tu base de conocimiento primero, Antes de responder.", 

@@ -1,6 +1,5 @@
 import os
 from agno.agent import Agent
-from agno.team.team import Team
 from agno.models.openai import OpenAIChat
 from agno.models.aws import Claude
 from agno.playground.playground import Playground
@@ -12,6 +11,7 @@ from agno.knowledge.pdf import PDFKnowledgeBase
 from agno.storage.postgres import PostgresStorage
 from agno.vectordb.pgvector import PgVector, SearchType  
 from agno.tools.tavily import TavilyTools
+from agno.tools.thinking import ThinkingTools
 
 # Importamos CORS Middleware de FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -101,20 +101,16 @@ agente_busqueda_profunda = Agent(
 # Definición del equipo "Veredix" (igual que el agente RAG original) pero con los dos nuevos agentes agregados
 # =========================
 
-veredix_team = Team(
+veredix_team = Agent(
     name="Veredix Team",
-    team_id="veredix",
+    agent_id="veredix",
     model=Claude(id="us.anthropic.claude-3-7-sonnet-20250219-v1:0"),
     #model=OpenAIChat(id="o3-mini", reasoning_effort="high", api_key=os.getenv('OPENAI_API_KEY')),
     description="Te llamas Veredix, un Asistente Jurídico de IA ecuatoriano",
-    #read_chat_history=True,
-    enable_agentic_context=True,
-    enable_team_history=True,
-    num_of_interactions_from_history=3,
-    read_team_history=True,
+    read_chat_history=True,
     monitoring=False,
-    #add_history_to_messages=True,
-    #num_history_responses=3,
+    add_history_to_messages=True,
+    num_history_responses=3,
     show_tool_calls=False,
     add_datetime_to_instructions=True,
     storage=PostgresStorage(table_name="sesion_agente", db_url=db_url, auto_upgrade_schema=True), 
@@ -154,12 +150,13 @@ veredix_team = Team(
         "Si el usuario necesita un busqueda profunda o exhaustiva en la web puedes usar el (agente_busqueda_profunda) que es un agente de busqueda especializado en informacion actual y legal.",
     ],
     markdown=True,
-    members=[agente_legal, agente_buscador, agente_busqueda_profunda]  # Se agregan los 2 nuevos agentes al equipo
+    tools=[ThinkingTools()],
+    team=[agente_legal, agente_buscador, agente_busqueda_profunda]  # Se agregan los 2 nuevos agentes al equipo
 )
 
-# Inicializar Playground con el equipo "Veredix"
-app = Playground(teams=[veredix_team]).get_app()
-#app.root_path = "/api"
+# Inicializar Playground con el equipo "Veredix"        
+app = Playground(agents=[veredix_team]).get_app()
+app.root_path = "/api"
 
 # Agregamos el middleware de CORS
 app.add_middleware(
@@ -173,5 +170,5 @@ app.add_middleware(
 if __name__ == "__main__":
     #Cargar la base de conocimiento. (Descomentar si quieres indexar/regenerar)
     #knowledge_base.load(upsert=True)
-    #serve_playground_app("playgroundteam:app", host="0.0.0.0", port=7777, reload=True)
-    serve_playground_app("playgroundteam:app", host="0.0.0.0", port=7777)
+    #serve_playground_app("playground:app", host="0.0.0.0", port=7777, reload=True)
+    serve_playground_app("playground:app", host="0.0.0.0", port=7777)

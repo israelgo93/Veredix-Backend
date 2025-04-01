@@ -17,4 +17,4 @@ venv/
 Thumbs.db
 
 #Archivos de configuracion
-docker-compose.yml
+*docker-compose.yml

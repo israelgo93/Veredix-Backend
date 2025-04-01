@@ -25,8 +25,8 @@ db_password = os.getenv("DB_PASSWORD", "postgres")
 db_name = os.getenv("DB_NAME", "postgres")
 
 # URL de la base de datos PostgreSQL
-#db_url = f"postgresql+psycopg://{db_user}:{db_password}@{db_host}:54322/{db_name}"
-db_url = "postgresql+psycopg://postgres:postgres@localhost:54322/postgres"
+db_url = f"postgresql+psycopg://{db_user}:{db_password}@{db_host}:54322/{db_name}"
+#db_url = "postgresql+psycopg://postgres:postgres@localhost:54322/postgres"
 
 # Configuración de AWS (si es necesaria para alguna herramienta o integración)
 aws_access_key = os.getenv("AWS_ACCESS_KEY_ID")

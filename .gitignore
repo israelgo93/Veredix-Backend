@@ -1,16 +1,17 @@
-# Archivos de entorno
+# Archivos de entorno con credenciales
 .env
-.env.local
 .env.*
 .envlocal
 *.env
+!.env.example
 
-# Ignorar todas las variantes de archivos de entorno
-.env*
+# Dependencias
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
 
-# Archivos de configuración local específicos
-config.local.js
-config.development.js
-
-# Directorios que pueden contener datos sensibles
-/secrets/
+# Logs y archivos temporales
+*.log
+.DS_Store
+Thumbs.db

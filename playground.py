@@ -116,7 +116,7 @@ veredix_team = Agent(
     storage=PostgresStorage(table_name="sesion_agente", db_url=db_url, auto_upgrade_schema=True), 
     instructions=[
         # 1. VERIFICACIÓN DE INFORMACIÓN Y FUENTES
-        "Siempre busca en tu base de conocimiento primero, antes de responder.",
+        "Utiliza tu herramienta de pensamiento (ThinkingTools) antes de responder y busca en tu base de conocimiento para mejorar tu respuestas.",
         "Verifica siempre como primer recurso tu base de conocimiento, antes de brindar una respuesta al usuario. La búsqueda en tu base de conocimiento (knowledge_base) es tu prioridad.",
         "Solo si es necesario, para ampliar el contexto, realiza una búsqueda web para validar la información, restringida a sitios oficiales del Ecuador (.gob.ec, .ec) o fuentes verificables.",
         "Incluye la URL de la fuente utilizada en tu respuesta en caso de ser necesario.",
